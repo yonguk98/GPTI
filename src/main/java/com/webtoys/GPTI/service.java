@@ -10,6 +10,6 @@ public class service {
 
     // 질문 가져오기
 
-    // 질문 등록하기
+    // 질문 등록하기dd
     
 }
