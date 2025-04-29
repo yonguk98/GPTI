@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -14,12 +17,26 @@ public class AnswerService {
     // gpt로 부터 답변 받아서
     // 사용자에게 전달.
 
-    public void makeAnswer(){
+    public void makeAnswer(UserAnswerDto userAnswerDto) {
+        List<Map<String ,String>> questionAndAnswerList =  userAnswerDto.getQuestionsAndAnswers();
+
+        String finalQuestion = makeQuestionForGPT(questionAndAnswerList);
 
     }
 
-    private void makeQuestionForGPT(){
+    private String makeQuestionForGPT(List<Map<String ,String>> questionAndAnswerList) {
 
+        StringBuilder sb = new StringBuilder();
+
+        for (Map<String ,String> questionAndAnswer: questionAndAnswerList) {
+            String question = questionAndAnswer.get("question");
+            String answer = questionAndAnswer.get("answer");
+
+            sb.append(question).append(" : ").append(answer).append("\n");
+
+        }
+
+        return sb.toString();
     }
 
     private void sendQuestionToGPT(){
