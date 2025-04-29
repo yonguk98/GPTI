@@ -35,3 +35,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+## custom folder path ##
+src/main/java/com/webtoys/study
