@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class service {
+public class QuestionService {
     private QuestionRepository questionRepository;
 
     // 질문 가져오기
