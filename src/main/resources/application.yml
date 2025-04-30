@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: GPTI
+  profiles:
+    include: secret

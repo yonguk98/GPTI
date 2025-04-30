@@ -1,5 +1,6 @@
 package com.webtoys.GPTI;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/")
 public class controller {
+
+    private final AnswerService answerService;
 
     @GetMapping
     public String basic() {
@@ -21,9 +24,9 @@ public class controller {
     }
 
     @PostMapping("/mbti/answers")
-    public String answers(@RequestBody UserAnswerDto userAnswerDto) {
+    public String answers(@RequestBody UserAnswerDto userAnswerDto) throws JsonProcessingException {
 
-        System.out.println(userAnswerDto.getQuestionsAndAnswers().get(0));
+        answerService.makeAnswer(userAnswerDto);
 
         return "Hello World";
     }
