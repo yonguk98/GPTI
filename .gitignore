@@ -38,3 +38,4 @@ out/
 
 ## custom folder path ##
 src/main/java/com/webtoys/study
+src/main/resources/application-secret.yml
