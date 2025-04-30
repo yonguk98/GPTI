@@ -2,8 +2,15 @@ package com.webtoys.GPTI;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +23,9 @@ public class AnswerService {
     // gpt로 전달
     // gpt로 부터 답변 받아서
     // 사용자에게 전달.
+
+    @Value("${spring.openai.api-key}")
+    private static String openAIApiKey;
 
     public void makeAnswer(UserAnswerDto userAnswerDto) {
         List<Map<String ,String>> questionAndAnswerList =  userAnswerDto.getQuestionsAndAnswers();
@@ -39,7 +49,36 @@ public class AnswerService {
         return sb.toString();
     }
 
-    private void sendQuestionToGPT(){
+    // httpClient 라이브러리를 이용해 openAi로 gpt 호출하고 응답 받아오기
+    private void sendQuestionToGPT(String question) {
+
+        // 클라이언트 기본값으로 생성
+        HttpClient client = HttpClient.newHttpClient();
+
+        // 요청보낼 http request에 대한 target uri, header, method 설정 및 데이터 추가
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.openai.com/v1/chat/completions"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .header("Authorization","Bearer " + openAIApiKey)
+                .POST(HttpRequest.BodyPublishers.ofString(String.format("""
+                        {
+                            "model" : "gpt-4o-mini",
+                            "messages" : [
+                                {
+                                    "role": "user",
+                                    "content": "%s"
+                                }
+                            ]
+                        }""", question)))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            log.info(response.body());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
 
     }
 
