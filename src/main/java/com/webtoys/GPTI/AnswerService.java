@@ -26,10 +26,13 @@ public class AnswerService {
     // gpt로 부터 답변 받아서
     // 사용자에게 전달.
 
-    @Value("${spring.openai.api-key}")
+    @Value("${secret.openai.api-key}")
     private String openAIApiKey;
 
-    public void makeAnswer(UserAnswerDto userAnswerDto) throws JsonProcessingException {
+    @Value(value = "${secret.gpt.role}")
+    String gptRole;
+
+    public void makeAnswer(UserAnswerDto userAnswerDto) {
         List<Map<String ,String>> questionAndAnswerList =  userAnswerDto.getQuestionsAndAnswers();
 
         String finalQuestion = makeQuestionForGPT(questionAndAnswerList);
@@ -45,7 +48,7 @@ public class AnswerService {
             String question = questionAndAnswer.get("question");
             String answer = questionAndAnswer.get("answer");
 
-            sb.append(question).append(" : ").append(answer).append("\n");
+            sb.append(question).append(" : ").append(answer).append("  ");
 
         }
 
@@ -53,18 +56,37 @@ public class AnswerService {
     }
 
     // httpClient 라이브러리를 이용해 openAi로 gpt 호출하고 응답 받아오기
-    private void sendQuestionToGPT(String question) throws JsonProcessingException {
+    private void sendQuestionToGPT(String question)  {
 
         // 클라이언트 기본값으로 생성
         HttpClient client = HttpClient.newHttpClient();
 
-        log.info(openAIApiKey);
+        // 요청보낼 http request에 대한 target uri, header, method 설정 및 데이터 추가
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.openai.com/v1/chat/completions"))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .header("Authorization",String.format("Bearer %s", openAIApiKey))
+                .POST(HttpRequest.BodyPublishers.ofString(makeRequestBodyStringToJson(question)))
+                .build();
+
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            log.info(response.body());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+        }
+
+    }
+
+    private String makeRequestBodyStringToJson(String question) {
+
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         Map<String, Object> message1 = Map.of(
                 "role", "developer",
-                "content", "너는 질문과 답변을 보고 mbti를 추측해서 질문과 답변에 있는 핵심 단어는 사용하지 않고 특징을 100자로 설명해"
+                "content", gptRole
         );
 
         Map<String, Object> message2 = Map.of(
@@ -77,24 +99,11 @@ public class AnswerService {
                 "messages", List.of(message1, message2)
         );
 
-        String json = objectMapper.writeValueAsString(payload);
-
-        // 요청보낼 http request에 대한 target uri, header, method 설정 및 데이터 추가
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.openai.com/v1/chat/completions"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .header("Authorization",String.format("Bearer %s", openAIApiKey))
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-
         try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info(response.body());
-        } catch (Exception e) {
-            log.error(e.getMessage());
+            return objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
-
     }
 
 
