@@ -103,7 +103,7 @@ public class AnswerServiceTest {
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .header("Authorization",String.format("Bearer %s", openAIApiKey))
-                .POST(HttpRequest.BodyPublishers.ofString(makeRequestBodyStringToJson())
+                .POST(HttpRequest.BodyPublishers.ofString(makeRequestBodyStringToJson(makeRequestBodyStringToJson(" ")))
                 )
                 .build();
 
