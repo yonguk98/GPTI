@@ -37,7 +37,9 @@ public class AnswerService {
 
         String finalQuestion = makeQuestionForGPT(questionAndAnswerList);
 
-        String responseBody = sendQuestionToGPT(finalQuestion);
+        String requestBody = makeRequestBodyStringToJson(finalQuestion);
+
+        String responseBody = sendQuestionToGPT(requestBody);
 
         return parseGPTResponse(responseBody);
     }
@@ -58,7 +60,7 @@ public class AnswerService {
     }
 
     // httpClient 라이브러리를 이용해 openAi로 gpt 호출하고 응답 받아오기
-    private String sendQuestionToGPT(String question)  {
+    private String sendQuestionToGPT(String requestBody)  {
 
         // 클라이언트 기본값으로 생성
         HttpClient client = HttpClient.newHttpClient();
@@ -69,7 +71,7 @@ public class AnswerService {
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
                 .header("Authorization",String.format("Bearer %s", openAIApiKey))
-                .POST(HttpRequest.BodyPublishers.ofString(makeRequestBodyStringToJson(question)))
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
         try {
