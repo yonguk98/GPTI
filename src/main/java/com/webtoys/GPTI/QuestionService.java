@@ -32,7 +32,7 @@ public class QuestionService {
         questionRepository.save(
                 Question.builder()
                         .question(questionStringCheck(string))
-                        .type(stringTypeToInteger(stringType))
+                        .questionType(stringTypeToInteger(stringType))
                         .build()
         );
     }

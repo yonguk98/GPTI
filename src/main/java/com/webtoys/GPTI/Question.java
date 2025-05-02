@@ -20,7 +20,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private Integer type;
+    private Integer questionType;
 
     private String question;
 }
