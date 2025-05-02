@@ -76,7 +76,6 @@ public class AnswerService {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info(response.body());
             return response.body();
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -123,7 +122,7 @@ public class AnswerService {
 
             return contentNode.asText();
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
     }
