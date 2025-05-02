@@ -1,5 +1,5 @@
 package com.webtoys.GPTI;
 
-public class QuestionResponseDto {
-    
+public record QuestionResponseDto(String contents) {
+
 }

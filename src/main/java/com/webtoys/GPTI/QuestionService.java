@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Random;
 
 
 /**
@@ -17,15 +20,32 @@ public class QuestionService {
     private QuestionRepository questionRepository;
 
     // 질문 가져오기
-    public List<Question> getAllQuestions(){
+    private List<Question> getAllQuestions(){
         return questionRepository.findAll();
     }
 
-    // public List<QuestionResponseDto> getRandomQuestions(){
-        
-        
-        
-    // }
+    private Optional<List<Question>> getQuestionsByType(Integer questionType) {
+        return Optional.ofNullable(questionType)
+                .map(questionRepository::findAllByQuestionType)
+                .filter(list -> !list.isEmpty());
+    }
+
+     public List<QuestionResponseDto> makeRandomQuestionList(){
+        List<QuestionResponseDto> questionResponseDtoList = new ArrayList<>();
+
+         for (int i = 1; i <= 4; i++) {
+             QuestionResponseDto dto = Optional.ofNullable(getQuestionsByType(i))
+                     .filter(Optional::isPresent)
+                     .map(Optional::get)
+                     .map(list -> list.get(new Random().nextInt(list.size())))
+                     .map(question -> new QuestionResponseDto(question.getQuestionContent()))
+                     .orElseThrow(() -> new RuntimeException("No question found"));
+
+             questionResponseDtoList.add(dto);
+         }
+
+         return questionResponseDtoList;
+     }
 
     // 질문 등록하기
     public void addQuestion(String string, String stringType){
