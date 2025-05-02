@@ -31,7 +31,7 @@ public class QuestionService {
     public void addQuestion(String string, String stringType){
         questionRepository.save(
                 Question.builder()
-                        .question(questionStringCheck(string))
+                        .questionContent(questionStringCheck(string))
                         .questionType(stringTypeToInteger(stringType))
                         .build()
         );

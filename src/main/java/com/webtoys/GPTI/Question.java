@@ -22,5 +22,5 @@ public class Question {
 
     private Integer questionType;
 
-    private String question;
+    private String questionContent;
 }
