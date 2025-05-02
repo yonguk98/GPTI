@@ -21,6 +21,12 @@ public class QuestionService {
         return questionRepository.findAll();
     }
 
+    // public List<QuestionResponseDto> getRandomQuestions(){
+        
+        
+        
+    // }
+
     // 질문 등록하기
     public void addQuestion(String string, String stringType){
         questionRepository.save(
