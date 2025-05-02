@@ -17,7 +17,8 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 public class QuestionService {
-    private QuestionRepository questionRepository;
+
+    private final QuestionRepository questionRepository;
 
     // 질문 가져오기
     private List<Question> getAllQuestions(){
