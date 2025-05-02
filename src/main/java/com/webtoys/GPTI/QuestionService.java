@@ -25,8 +25,7 @@ public class QuestionService {
     }
 
     private Optional<List<Question>> getQuestionsByType(Integer questionType) {
-        return Optional.ofNullable(questionType)
-                .map(questionRepository::findAllByQuestionType)
+        return Optional.ofNullable(questionRepository.findAllByQuestionType(questionType))
                 .filter(list -> !list.isEmpty());
     }
 
@@ -38,7 +37,7 @@ public class QuestionService {
                      .filter(Optional::isPresent)
                      .map(Optional::get)
                      .map(list -> list.get(new Random().nextInt(list.size())))
-                     .map(question -> new QuestionResponseDto(question.getQuestionContent()))
+                     .map(question -> new QuestionResponseDto(question.getQuestionContents()))
                      .orElseThrow(() -> new RuntimeException("No question found"));
 
              questionResponseDtoList.add(dto);
@@ -51,7 +50,7 @@ public class QuestionService {
     public void addQuestion(String string, String stringType){
         questionRepository.save(
                 Question.builder()
-                        .questionContent(questionStringCheck(string))
+                        .questionContents(questionStringCheck(string))
                         .questionType(stringTypeToInteger(stringType))
                         .build()
         );

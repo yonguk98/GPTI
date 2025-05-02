@@ -1,5 +1,6 @@
-CREATE TABLE if not exists question (
+drop table question;
+CREATE TABLE question (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
-    questionType INTEGER not null,
-    questionContents TEXT not null
+    question_type INTEGER not null,
+    question_contents TEXT not null
 );
