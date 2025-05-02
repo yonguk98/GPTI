@@ -19,13 +19,13 @@ public class controller {
         return "Hello World";
     }
 
+//    @GetMapping("/mbti/questions")
+//    public List<QuestionResponseDto> questions() {
+//
+//        return questionService.makeRandomQuestionResponseDtoList();
+//    }
+
     @GetMapping("/mbti/questions")
-    public List<QuestionResponseDto> questions() {
-
-        return questionService.makeRandomQuestionResponseDtoList();
-    }
-
-    @GetMapping("/mbti/questions/string")
     public List<String> questionsString() {
 
         return questionService.makeRandomQuestionStringList();
