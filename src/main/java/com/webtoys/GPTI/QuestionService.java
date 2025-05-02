@@ -30,7 +30,7 @@ public class QuestionService {
                 .filter(list -> !list.isEmpty());
     }
 
-     public List<QuestionResponseDto> makeRandomQuestionList(){
+     public List<QuestionResponseDto> makeRandomQuestionResponseDtoList(){
         List<QuestionResponseDto> questionResponseDtoList = new ArrayList<>();
 
          for (int i = 1; i <= 4; i++) {
@@ -46,6 +46,23 @@ public class QuestionService {
 
          return questionResponseDtoList;
      }
+
+    public List<String> makeRandomQuestionStringList(){
+
+        List<String> questionStringList = new ArrayList<>();
+
+        for (int i = 1; i <= 4; i++) {
+            String s = Optional.ofNullable(getQuestionsByType(i))
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
+                    .map(list -> list.get(new Random().nextInt(list.size())))
+                    .map(Question::getQuestionContents)
+                    .orElseThrow();
+            questionStringList.add(s);
+        }
+
+        return questionStringList;
+    }
 
     // 질문 등록하기
     public void addQuestion(String string, String stringType){

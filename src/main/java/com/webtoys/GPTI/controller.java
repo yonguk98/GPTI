@@ -22,7 +22,13 @@ public class controller {
     @GetMapping("/mbti/questions")
     public List<QuestionResponseDto> questions() {
 
-        return questionService.makeRandomQuestionList();
+        return questionService.makeRandomQuestionResponseDtoList();
+    }
+
+    @GetMapping("/mbti/questions/string")
+    public List<String> questionsString() {
+
+        return questionService.makeRandomQuestionStringList();
     }
 
     @PostMapping("/mbti/answers")
