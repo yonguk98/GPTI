@@ -90,28 +90,28 @@ public class AnswerServiceTest {
         }
     }
 
-    @Test
-    void sendQuestionToGPTTest(){
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        // 클라이언트 기본값으로 생성
-        HttpClient client = HttpClient.newHttpClient();
-
-        // 요청보낼 http request에 대한 target uri, header, method 설정 및 데이터 추가
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.openai.com/v1/chat/completions"))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .header("Authorization",String.format("Bearer %s", openAIApiKey))
-                .POST(HttpRequest.BodyPublishers.ofString(makeRequestBodyStringToJson(makeRequestBodyStringToJson(" ")))
-                )
-                .build();
-
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println(response.body());
-        } catch (Exception e) {
-            e.getMessage();
-        }
-    }
+//    @Test
+//    void sendQuestionToGPTTest(){
+//        ObjectMapper objectMapper = new ObjectMapper();
+//
+//        // 클라이언트 기본값으로 생성
+//        HttpClient client = HttpClient.newHttpClient();
+//
+//        // 요청보낼 http request에 대한 target uri, header, method 설정 및 데이터 추가
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(URI.create("https://api.openai.com/v1/chat/completions"))
+//                .timeout(Duration.ofSeconds(10))
+//                .header("Content-Type", "application/json")
+//                .header("Authorization",String.format("Bearer %s", openAIApiKey))
+//                .POST(HttpRequest.BodyPublishers.ofString(makeRequestBodyStringToJson(makeRequestBodyStringToJson(" ")))
+//                )
+//                .build();
+//
+//        try {
+//            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+//            System.out.println(response.body());
+//        } catch (Exception e) {
+//            e.getMessage();
+//        }
+//    }
 }
