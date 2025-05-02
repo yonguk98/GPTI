@@ -2,4 +2,5 @@ spring:
   application:
     name: GPTI
   profiles:
+    active: dev
     include: secret
