@@ -32,11 +32,9 @@ public class controller {
     }
 
     @PostMapping("/mbti/answers")
-    public String answers(@RequestBody UserAnswerDto userAnswerDto) throws JsonProcessingException {
+    public String answers(@RequestBody UserAnswerDto userAnswerDto) {
 
-        answerService.makeAnswer(userAnswerDto);
-
-        return "Hello World";
+        return answerService.makeAnswer(userAnswerDto);
     }
 
 }
