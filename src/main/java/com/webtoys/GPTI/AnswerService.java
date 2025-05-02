@@ -1,6 +1,7 @@
 package com.webtoys.GPTI;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,12 +32,14 @@ public class AnswerService {
     @Value(value = "${secret.gpt.role}")
     String gptRole;
 
-    public void makeAnswer(UserAnswerDto userAnswerDto) {
+    public String makeAnswer(UserAnswerDto userAnswerDto) {
         List<Map<String ,String>> questionAndAnswerList =  userAnswerDto.getQuestionsAndAnswers();
 
         String finalQuestion = makeQuestionForGPT(questionAndAnswerList);
 
-        sendQuestionToGPT(finalQuestion);
+        String responseBody = sendQuestionToGPT(finalQuestion);
+
+        return parseGPTResponse(responseBody);
     }
 
     private String makeQuestionForGPT(List<Map<String ,String>> questionAndAnswerList) {
@@ -55,7 +58,7 @@ public class AnswerService {
     }
 
     // httpClient 라이브러리를 이용해 openAi로 gpt 호출하고 응답 받아오기
-    private void sendQuestionToGPT(String question)  {
+    private String sendQuestionToGPT(String question)  {
 
         // 클라이언트 기본값으로 생성
         HttpClient client = HttpClient.newHttpClient();
@@ -72,10 +75,11 @@ public class AnswerService {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             log.info(response.body());
+            return response.body();
         } catch (Exception e) {
             log.error(e.getMessage());
+            return null;
         }
-
     }
 
     private String makeRequestBodyStringToJson(String question) {
@@ -105,5 +109,21 @@ public class AnswerService {
         }
     }
 
+    private String parseGPTResponse(String responseBody)  {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            JsonNode root = objectMapper.readTree(responseBody);
+            JsonNode contentNode = root
+                    .path("choices")
+                    .get(0)
+                    .path("message")
+                    .path("content");
+
+            return contentNode.asText();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
 }
