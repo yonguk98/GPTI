@@ -14,11 +14,6 @@ public class controller {
     private final QuestionService questionService;
     private final AnswerService answerService;
 
-    @GetMapping
-    public String basic() {
-        return "Hello World";
-    }
-
 //    @GetMapping("/mbti/questions")
 //    public List<QuestionResponseDto> questions() {
 //
