@@ -34,9 +34,7 @@ public class QuestionService {
         List<QuestionResponseDto> questionResponseDtoList = new ArrayList<>();
 
          for (int i = 1; i <= 4; i++) {
-             QuestionResponseDto dto = Optional.ofNullable(getQuestionsByType(i))
-                     .filter(Optional::isPresent)
-                     .map(Optional::get)
+             QuestionResponseDto dto = getQuestionsByType(i)
                      .map(list -> list.get(new Random().nextInt(list.size())))
                      .map(question -> new QuestionResponseDto(question.getQuestionContents()))
                      .orElseThrow(() -> new RuntimeException("No question found"));
@@ -50,15 +48,17 @@ public class QuestionService {
     public List<String> makeRandomQuestionStringList(){
 
         List<String> questionStringList = new ArrayList<>();
+        Random random = new Random();
 
         for (int i = 1; i <= 4; i++) {
-            String s = Optional.ofNullable(getQuestionsByType(i))
-                    .filter(Optional::isPresent)
-                    .map(Optional::get)
-                    .map(list -> list.get(new Random().nextInt(list.size())))
-                    .map(Question::getQuestionContents)
-                    .orElseThrow();
-            questionStringList.add(s);
+            getQuestionsByType(i).ifPresentOrElse(list ->
+                    questionStringList.add(
+                        list.get(random.nextInt(list.size()))
+                            .getQuestionContents()),
+                    () -> {
+                        throw new NullPointerException("No question found");
+                    }
+            );
         }
 
         return questionStringList;
